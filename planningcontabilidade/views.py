@@ -13,3 +13,4 @@ def executar_importacao(request):
         cursor.executescript(sql_script)
 
     return HttpResponse("Importação executada com sucesso!")
+    
