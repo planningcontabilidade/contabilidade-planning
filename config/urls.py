@@ -1,9 +1,7 @@
-from django.http import HttpResponse
+from django.contrib import admin
 from django.urls import path
-
-def home(request):
-    return HttpResponse("Sistema Contabilidade Online 🚀")
+from .views import home  # IMPORTANTE
 
 urlpatterns = [
-    path('', home),
+    path("", home, name="home"),
 ]
