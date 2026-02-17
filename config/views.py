@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-@login_required
-def home(request):
+def create_user(request):
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@email.com', '123456')
     return render(request, "index.html")
