@@ -1,50 +1,44 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div style="display: flex; min-height: 80vh;">
+{% block title %}Dashboard{% endblock %}
 
-    <!-- Sidebar -->
-    <div style="width: 220px; background-color: #1f2d3d; padding: 20px; color: white;">
-        <h3 style="color: #ffffff;">Menu</h3>
-        <hr style="border-color: #34495e;">
-        <p><a href="#" style="color: white; text-decoration: none;">Dashboard</a></p>
-        <p><a href="#" style="color: white; text-decoration: none;">Clientes</a></p>
-        <p><a href="#" style="color: white; text-decoration: none;">Financeiro</a></p>
-        <p><a href="#" style="color: white; text-decoration: none;">Relatórios</a></p>
+{% block content %}
+
+<h2 class="mb-4">Dashboard Financeiro</h2>
+
+<div class="row g-4">
+
+    <!-- Receita -->
+    <div class="col-md-4">
+        <div class="card card-custom p-4">
+            <h6 class="text-muted">Receita Mensal</h6>
+            <h3 class="text-success">R$ 25.000</h3>
+        </div>
     </div>
 
-    <!-- Conteúdo principal -->
-    <div style="flex: 1; padding: 40px; background-color: #f4f6f9;">
-        
-        <h2 style="margin-bottom: 30px;">Dashboard Financeiro</h2>
-
-        <!-- Cards -->
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-
-            <div style="background: white; padding: 20px; width: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <h4>Receita Mensal</h4>
-                <h2 style="color: #27ae60;">R$ 25.000</h2>
-            </div>
-
-            <div style="background: white; padding: 20px; width: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <h4>Despesas</h4>
-                <h2 style="color: #c0392b;">R$ 8.500</h2>
-            </div>
-
-            <div style="background: white; padding: 20px; width: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <h4>Lucro</h4>
-                <h2 style="color: #2980b9;">R$ 16.500</h2>
-            </div>
-
+    <!-- Despesas -->
+    <div class="col-md-4">
+        <div class="card card-custom p-4">
+            <h6 class="text-muted">Despesas</h6>
+            <h3 class="text-danger">R$ 8.500</h3>
         </div>
+    </div>
 
-        <!-- Área adicional -->
-        <div style="margin-top: 40px;">
-            <h3>Resumo do Mês</h3>
-            <p>Sistema contábil empresarial em desenvolvimento.</p>
+    <!-- Lucro -->
+    <div class="col-md-4">
+        <div class="card card-custom p-4">
+            <h6 class="text-muted">Lucro</h6>
+            <h3 class="text-primary">R$ 16.500</h3>
         </div>
-
     </div>
 
 </div>
+
+<div class="card card-custom p-4 mt-5">
+    <h5>Resumo do Mês</h5>
+    <p class="text-muted mb-0">
+        Sistema contábil empresarial em desenvolvimento.
+    </p>
+</div>
+
 {% endblock %}
