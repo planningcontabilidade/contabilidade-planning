@@ -1,4 +1,8 @@
+    from django.shortcuts import render
 from django.contrib.auth.models import User
+
+def home(request):
+    return render(request, "index.html")
 
 def create_user(request):
     if not User.objects.filter(username='admin').exists():
