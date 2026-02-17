@@ -60,13 +60,6 @@
         <span class="navbar-brand fw-semibold">
             Contabilidade Planning
         </span>
-
-        {% if user.is_authenticated %}
-        <div class="text-white small">
-            Olá, {{ user.username }} |
-            <a href="{% url 'logout' %}" class="text-white text-decoration-none">Sair</a>
-        </div>
-        {% endif %}
     </div>
 </nav>
 
@@ -74,10 +67,9 @@
 <div class="container-fluid">
     <div class="row">
 
-        {% if user.is_authenticated %}
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR FIXA -->
         <div class="col-md-2 sidebar">
-            <a href="{% url 'home' %}">📊 Dashboard</a>
+            <a href="/">📊 Dashboard</a>
             <a href="#">👥 Clientes</a>
             <a href="#">💰 Financeiro</a>
             <a href="#">📑 Relatórios</a>
@@ -86,13 +78,8 @@
 
         <!-- CONTENT -->
         <div class="col-md-10 p-4 content-area">
-        {% else %}
-        <div class="col-12 p-4 content-area">
-        {% endif %}
-
             {% block content %}
             {% endblock %}
-
         </div>
 
     </div>
@@ -108,4 +95,3 @@
 
 </body>
 </html>
-
