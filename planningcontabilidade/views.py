@@ -13,6 +13,18 @@ def executar_migrate(request):
         return HttpResponse(f"Erro ao executar migrations: {str(e)}")
 
 
+def ajustar_nome_nullable(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                ALTER TABLE planningcontabilidade_cliente
+                ALTER COLUMN nome DROP NOT NULL;
+            """)
+        return HttpResponse("Campo 'nome' agora permite NULL!")
+    except Exception as e:
+        return HttpResponse(f"Erro ao alterar campo: {str(e)}")
+
+
 def executar_importacao(request):
     try:
         caminho = os.path.join(
@@ -38,3 +50,4 @@ def executar_importacao(request):
 
     except Exception as e:
         return HttpResponse(f"Erro ao executar importação: {str(e)}")
+
