@@ -1,20 +1,40 @@
 from django.db import connection
 from django.http import HttpResponse
+from django.core.management import call_command
 import os
 
 
+def executar_migrate(request):
+    try:
+        call_command("makemigrations")
+        call_command("migrate")
+        return HttpResponse("Migrations executadas com sucesso!")
+    except Exception as e:
+        return HttpResponse(f"Erro ao executar migrations: {str(e)}")
+
+
 def executar_importacao(request):
-    caminho = os.path.join(os.path.dirname(os.path.dirname(__file__)), "import_clientes.sql")
+    try:
+        caminho = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "import_clientes.sql"
+        )
 
-    with open(caminho, "r", encoding="utf-8") as f:
-        sql_script = f.read()
+        if not os.path.exists(caminho):
+            return HttpResponse("Arquivo import_clientes.sql não encontrado.")
 
-    comandos = sql_script.split(";")
+        with open(caminho, "r", encoding="utf-8") as f:
+            sql_script = f.read()
 
-    with connection.cursor() as cursor:
-        for comando in comandos:
-            comando = comando.strip()
-            if comando:
-                cursor.execute(comando)
+        comandos = sql_script.split(";")
 
-    return HttpResponse("Importação executada com sucesso!")
+        with connection.cursor() as cursor:
+            for comando in comandos:
+                comando = comando.strip()
+                if comando:
+                    cursor.execute(comando)
+
+        return HttpResponse("Importação executada com sucesso!")
+
+    except Exception as e:
+        return HttpResponse(f"Erro ao executar importação: {str(e)}")
