@@ -1,9 +1,49 @@
-from django.db import connection
+from django.db import connection, transaction
 from django.http import HttpResponse
 from django.core.management import call_command
 import os
 
 
+# ==============================
+# Página Inicial
+# ==============================
+def home(request):
+    return HttpResponse("""
+        <html>
+            <head>
+                <title>Planning Contabilidade</title>
+                <style>
+                    body {
+                        font-family: Arial;
+                        text-align: center;
+                        margin-top: 100px;
+                        background-color: #f4f6f9;
+                    }
+                    h1 { color: #2c3e50; }
+                    a {
+                        display: inline-block;
+                        margin: 10px;
+                        padding: 12px 25px;
+                        background-color: #3498db;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+                    a:hover { background-color: #2980b9; }
+                </style>
+            </head>
+            <body>
+                <h1>Planning Contabilidade</h1>
+                <p>Sistema de Gestão de Clientes</p>
+                <a href="/executar-importacao/">Importar Clientes</a>
+            </body>
+        </html>
+    """)
+
+
+# ==============================
+# Executar Migrations
+# ==============================
 def executar_migrate(request):
     try:
         call_command("makemigrations")
@@ -13,18 +53,9 @@ def executar_migrate(request):
         return HttpResponse(f"Erro ao executar migrations: {str(e)}")
 
 
-def ajustar_nome_nullable(request):
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                ALTER TABLE planningcontabilidade_cliente
-                ALTER COLUMN nome DROP NOT NULL;
-            """)
-        return HttpResponse("Campo 'nome' agora permite NULL!")
-    except Exception as e:
-        return HttpResponse(f"Erro ao alterar campo: {str(e)}")
-
-
+# ==============================
+# Importação Segura
+# ==============================
 def executar_importacao(request):
     try:
         caminho = os.path.join(
@@ -40,14 +71,30 @@ def executar_importacao(request):
 
         comandos = sql_script.split(";")
 
-        with connection.cursor() as cursor:
-            for comando in comandos:
-                comando = comando.strip()
-                if comando:
-                    cursor.execute(comando)
+        inseridos = 0
+        ignorados = 0
 
-        return HttpResponse("Importação executada com sucesso!")
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                for comando in comandos:
+                    comando = comando.strip()
+
+                    # Executa apenas INSERT
+                    if comando.upper().startswith("INSERT"):
+                        try:
+                            cursor.execute(comando)
+                            inseridos += 1
+                        except Exception:
+                            ignorados += 1
+
+        return HttpResponse(
+            f"""
+            <h2>Importação Finalizada</h2>
+            <p>✔ Inseridos: {inseridos}</p>
+            <p>⚠ Ignorados: {ignorados}</p>
+            <a href="/">Voltar para Home</a>
+            """
+        )
 
     except Exception as e:
         return HttpResponse(f"Erro ao executar importação: {str(e)}")
-
