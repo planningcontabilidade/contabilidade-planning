@@ -9,8 +9,12 @@ def executar_importacao(request):
     with open(caminho, "r", encoding="utf-8") as f:
         sql_script = f.read()
 
+    comandos = sql_script.split(";")
+
     with connection.cursor() as cursor:
-        cursor.executescript(sql_script)
+        for comando in comandos:
+            comando = comando.strip()
+            if comando:
+                cursor.execute(comando)
 
     return HttpResponse("Importação executada com sucesso!")
-    
