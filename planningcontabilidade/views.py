@@ -1,7 +1,9 @@
 from django.db import connection, transaction
 from django.http import HttpResponse
-from django.core.management import call_command
+from django.shortcuts import render
 import os
+
+from .models import Cliente
 
 
 # ==============================
@@ -9,48 +11,32 @@ import os
 # ==============================
 def home(request):
     return HttpResponse("""
+        <!DOCTYPE html>
         <html>
-            <head>
-                <title>Planning Contabilidade</title>
-                <style>
-                    body {
-                        font-family: Arial;
-                        text-align: center;
-                        margin-top: 100px;
-                        background-color: #f4f6f9;
-                    }
-                    h1 { color: #2c3e50; }
-                    a {
-                        display: inline-block;
-                        margin: 10px;
-                        padding: 12px 25px;
-                        background-color: #3498db;
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 5px;
-                    }
-                    a:hover { background-color: #2980b9; }
-                </style>
-            </head>
-            <body>
-                <h1>Planning Contabilidade</h1>
-                <p>Sistema de Gestão de Clientes</p>
-                <a href="/executar-importacao/">Importar Clientes</a>
-            </body>
+        <head>
+            <title>Planning Contabilidade</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body class="bg-light">
+
+        <div class="container text-center mt-5">
+            <div class="card shadow p-5">
+                <h1 class="mb-3">Planning Contabilidade</h1>
+                <p class="mb-4">Sistema de Gestão de Clientes</p>
+
+                <a href="/executar-importacao/" class="btn btn-primary m-2">
+                    Importar Clientes
+                </a>
+
+                <a href="/clientes/" class="btn btn-dark m-2">
+                    Ver Clientes
+                </a>
+            </div>
+        </div>
+
+        </body>
         </html>
     """)
-
-
-# ==============================
-# Executar Migrations
-# ==============================
-def executar_migrate(request):
-    try:
-        call_command("makemigrations")
-        call_command("migrate")
-        return HttpResponse("Migrations executadas com sucesso!")
-    except Exception as e:
-        return HttpResponse(f"Erro ao executar migrations: {str(e)}")
 
 
 # ==============================
@@ -79,7 +65,6 @@ def executar_importacao(request):
                 for comando in comandos:
                     comando = comando.strip()
 
-                    # Executa apenas INSERT
                     if comando.upper().startswith("INSERT"):
                         try:
                             cursor.execute(comando)
@@ -87,14 +72,37 @@ def executar_importacao(request):
                         except Exception:
                             ignorados += 1
 
-        return HttpResponse(
-            f"""
-            <h2>Importação Finalizada</h2>
-            <p>✔ Inseridos: {inseridos}</p>
-            <p>⚠ Ignorados: {ignorados}</p>
-            <a href="/">Voltar para Home</a>
-            """
-        )
+        return HttpResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Importação Finalizada</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+            </head>
+            <body class="bg-light">
+                <div class="container mt-5 text-center">
+                    <div class="card shadow p-4">
+                        <h2 class="mb-3">Importação Finalizada</h2>
+                        <p class="text-success">✔ Inseridos: {inseridos}</p>
+                        <p class="text-warning">⚠ Ignorados: {ignorados}</p>
+
+                        <a href="/" class="btn btn-secondary mt-3">Voltar para Home</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+        """)
 
     except Exception as e:
         return HttpResponse(f"Erro ao executar importação: {str(e)}")
+
+
+# ==============================
+# Lista de Clientes
+# ==============================
+def lista_clientes(request):
+    clientes = Cliente.objects.all().order_by("id")
+
+    return render(request, "lista_clientes.html", {
+        "clientes": clientes
+    })
