@@ -2,7 +2,7 @@ from django.db import models
 
 class Cliente(models.Model):
     ordem = models.IntegerField(null=True, blank=True)
-    nome = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255, null=True, blank=True)
     proprietario = models.CharField(max_length=255, null=True, blank=True)
     cnpj = models.CharField(max_length=20, null=True, blank=True)
     uf = models.CharField(max_length=5, null=True, blank=True)
