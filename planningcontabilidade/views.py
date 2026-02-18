@@ -14,14 +14,14 @@ def home(request):
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Planning Contabilidade</title>
+            <title>Araújo Gonçalves Contadores Associados</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         </head>
         <body class="bg-light">
 
         <div class="container text-center mt-5">
             <div class="card shadow p-5">
-                <h1 class="mb-3">Planning Contabilidade</h1>
+                <h1 class="mb-3">Araújo Gonçalves Contadores Associados</h1>
                 <p class="mb-4">Sistema de Gestão de Clientes</p>
 
                 <a href="/executar-importacao/" class="btn btn-primary m-2">
