@@ -3,7 +3,7 @@ from django.urls import path
 from planningcontabilidade.views import home, executar_importacao
 
 urlpatterns = [
-    path('', home),  # página inicial
+    path('', home),  # Página inicial
     path('executar-importacao/', executar_importacao),
     path('admin/', admin.site.urls),
 ]
