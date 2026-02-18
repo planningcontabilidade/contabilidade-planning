@@ -7,7 +7,6 @@ from planningcontabilidade.views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('executar-migrate/', executar_migrate),
     path('ajustar-nome-null/', ajustar_nome_nullable),
     path('executar-importacao/', executar_importacao),
