@@ -1,44 +1,85 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard Executivo{% endblock %}
 
 {% block content %}
 
-<h2 class="mb-4">Dashboard Financeiro</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Dashboard Executivo</h2>
+    <span class="text-muted">Visão Geral do Sistema</span>
+</div>
 
 <div class="row g-4">
 
-    <!-- Receita -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4">
-            <h6 class="text-muted">Receita Mensal</h6>
-            <h3 class="text-success">R$ 25.000</h3>
+    <!-- Total de Clientes -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-4 text-center">
+            <h6 class="text-muted">Total de Clientes</h6>
+            <h2 class="fw-bold text-primary">{{ total_clientes }}</h2>
         </div>
     </div>
 
-    <!-- Despesas -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4">
-            <h6 class="text-muted">Despesas</h6>
-            <h3 class="text-danger">R$ 8.500</h3>
+    <!-- Clientes com CNPJ -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-4 text-center">
+            <h6 class="text-muted">Clientes com CNPJ</h6>
+            <h2 class="fw-bold text-success">{{ total_cnpj }}</h2>
         </div>
     </div>
 
-    <!-- Lucro -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4">
-            <h6 class="text-muted">Lucro</h6>
-            <h3 class="text-primary">R$ 16.500</h3>
+    <!-- Clientes com Inscrição Estadual -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-4 text-center">
+            <h6 class="text-muted">Com Inscrição Estadual</h6>
+            <h2 class="fw-bold text-warning">{{ total_ie }}</h2>
+        </div>
+    </div>
+
+    <!-- Estados Atendidos -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-4 text-center">
+            <h6 class="text-muted">Estados Atendidos</h6>
+            <h2 class="fw-bold text-dark">{{ total_ufs }}</h2>
         </div>
     </div>
 
 </div>
 
-<div class="card card-custom p-4 mt-5">
-    <h5>Resumo do Mês</h5>
+
+<!-- Distribuição por UF -->
+<div class="card shadow-sm border-0 p-4 mt-5">
+    <h5 class="fw-semibold mb-3">Distribuição de Clientes por UF</h5>
+
+    {% if clientes_por_uf %}
+        <table class="table table-sm table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>UF</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in clientes_por_uf %}
+                <tr>
+                    <td>{{ item.uf }}</td>
+                    <td>{{ item.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted">Nenhuma informação disponível.</p>
+    {% endif %}
+</div>
+
+
+<!-- Observações -->
+<div class="card shadow-sm border-0 p-4 mt-4">
+    <h5 class="fw-semibold">Resumo do Sistema</h5>
     <p class="text-muted mb-0">
-        Sistema contábil empresarial em desenvolvimento.
+        Painel executivo com indicadores reais extraídos da base de clientes.
     </p>
 </div>
 
 {% endblock %}
+
