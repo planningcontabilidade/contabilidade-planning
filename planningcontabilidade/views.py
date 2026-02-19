@@ -1,42 +1,33 @@
 from django.db import connection, transaction
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Count
 import os
 
 from .models import Cliente
 
 
 # ==============================
-# Página Inicial
+# Dashboard Executivo
 # ==============================
 def home(request):
-    return HttpResponse("""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Araújo Gonçalves Contadores Associados</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        </head>
-        <body class="bg-light">
+    total_clientes = Cliente.objects.count()
 
-        <div class="container text-center mt-5">
-            <div class="card shadow p-5">
-                <h1 class="mb-3">Araújo Gonçalves Contadores Associados</h1>
-                <p class="mb-4">Sistema de Gestão de Clientes</p>
+    clientes_por_uf = (
+        Cliente.objects
+        .values("uf")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
 
-                <a href="/executar-importacao/" class="btn btn-primary m-2">
-                    Importar Clientes
-                </a>
+    top_ufs = clientes_por_uf[:5]
 
-                <a href="/clientes/" class="btn btn-dark m-2">
-                    Ver Clientes
-                </a>
-            </div>
-        </div>
+    context = {
+        "total_clientes": total_clientes,
+        "top_ufs": top_ufs,
+    }
 
-        </body>
-        </html>
-    """)
+    return render(request, "index.html", context)
 
 
 # ==============================
@@ -86,7 +77,7 @@ def executar_importacao(request):
                         <p class="text-success">✔ Inseridos: {inseridos}</p>
                         <p class="text-warning">⚠ Ignorados: {ignorados}</p>
 
-                        <a href="/" class="btn btn-secondary mt-3">Voltar para Home</a>
+                        <a href="/" class="btn btn-secondary mt-3">Voltar para Dashboard</a>
                     </div>
                 </div>
             </body>
@@ -101,8 +92,14 @@ def executar_importacao(request):
 # Lista de Clientes
 # ==============================
 def lista_clientes(request):
+    busca = request.GET.get("q")
+
     clientes = Cliente.objects.all().order_by("id")
 
+    if busca:
+        clientes = clientes.filter(nome__icontains=busca)
+
     return render(request, "lista_clientes.html", {
-        "clientes": clientes
+        "clientes": clientes,
+        "busca": busca
     })
